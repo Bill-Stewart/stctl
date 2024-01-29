@@ -112,7 +112,7 @@ begin
   end;
 end;
 
-// Gets executable filename for current process
+// Gets executable filename for specified process
 function GetProcessExecutable(const ProcessID: DWORD): string;
 const
   MAX_LEN = 32768;
