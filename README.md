@@ -18,9 +18,15 @@ Command-line parameters are case sensitive. The file `stctl.exe` must sit in the
 
 ### Start Syncthing
 
-`stctl` `--start` [`-q`]
+`stctl` `--start` [`-q`] [`--` _syncthing parameters_]
 
 The `--start` parameter starts Syncthing if it is not running. If Syncthing is already running, a message box will indicate this unless you also specify `-q`.
+
+To specify additional command line parameters for `syncthing.exe`, append two dashes (`--`) and the parameters afterwards. For example:
+
+`stctl --start -- --config="C:\Users\User\Syncthing Config Dir"`
+
+This command will start Syncthing with a custom configuration directory.
 
 ---
 
@@ -34,9 +40,15 @@ The `--stop` parameter stops Syncthing if it is running. If Syncthing is not run
 
 ## Remarks
 
-**stctl** is part of Syncthing Windows Setup (https://github.com/Bill-Stewart/SyncthingWindowsSetup) 1.27.3 and later when you install Synncthing in non administrative (current user) installation mode.
+**stctl** is part of Syncthing Windows Setup (https://github.com/Bill-Stewart/SyncthingWindowsSetup) 1.27.3 and later when you install Syncthing in non administrative (current user) installation mode.
 
 ## VERSION HISTORY
+
+### 0.0.3 (2024-10-23)
+
+* Corrected runtime error issue (runtime error dialog would appear if **stctl** was started with invalid command-line parameters).
+
+* Added ability to append arbitrary command line parameters when starting Syncthing (`--` parameter).
 
 ### 0.0.2 (2024-01-29)
 

@@ -17,7 +17,7 @@ uses
   Windows,
   wargcv,
   wgetopts,
-  Messages,
+  WindowsMessages,
   Paths,
   Processes;
 
@@ -42,7 +42,7 @@ begin
     + sLineBreak
     + 'USAGE' + sLineBreak
     + sLineBreak
-    + PROGRAM_NAME + ' --start [-q]' + sLineBreak
+    + PROGRAM_NAME + ' --start [-q] [-- <syncthing parameters>]' + sLineBreak
     + '* Starts Syncthing for the current user' + sLineBreak
     + sLineBreak
     + PROGRAM_NAME + ' --stop [-q]' + sLineBreak
@@ -71,11 +71,12 @@ var
   Quiet: Boolean;
   I: Integer;
   Opt: Char;
-  StartDir, Msg: string;
+  StartDir, Msg, CommandTail: string;
   ProcStartInfo: TProcStartInfo;
   RC: DWORD;
 
 begin
+  OptErr := false;
   with Opts[1] do
   begin
     Name := 'help';
@@ -173,6 +174,9 @@ begin
       if not IsProcessRunning(ProcStartInfo.FileName) then
       begin
         ProcStartInfo.CommandLine := '--no-browser';
+        CommandTail := string(GetCommandTail(GetCommandLineW(), OptInd));
+        if CommandTail <> '' then
+          ProcStartInfo.CommandLine := ProcStartInfo.CommandLine + ' ' + CommandTail;
         RC := StartProcess(ProcStartInfo);
       end
       else

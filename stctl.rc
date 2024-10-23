@@ -1,6 +1,6 @@
 1 VERSIONINFO
-FILEVERSION 0,0,2,0
-PRODUCTVERSION 0,0,2,0
+FILEVERSION 0,0,3,0
+PRODUCTVERSION 0,0,3,0
 FILEOS 0x4
 FILETYPE 1
 {
@@ -10,12 +10,12 @@ FILETYPE 1
     {
       VALUE "CompanyName", "Bill Stewart (bstewart at iname.com)"
       VALUE "FileDescription", "stctl.exe"
-      VALUE "FileVersion", "0.0.2.0"
+      VALUE "FileVersion", "0.0.3.0"
       VALUE "InternalName", "stctl.exe"
       VALUE "LegalCopyright", "(C) 2024 by Bill Stewart (bstewart at iname.com)"
       VALUE "OriginalFilename", "stctl.exe"
       VALUE "ProductName", "stctl.exe"
-      VALUE "ProductVersion", "0.0.2.0"
+      VALUE "ProductVersion", "0.0.3.0"
     }
   }
 
