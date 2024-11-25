@@ -42,8 +42,9 @@ begin
     + sLineBreak
     + 'USAGE' + sLineBreak
     + sLineBreak
-    + PROGRAM_NAME + ' --start [-q] [-- <syncthing parameters>]' + sLineBreak
+    + PROGRAM_NAME + ' --start [-p <priority>] [-q] [-- <syncthing parameters>]' + sLineBreak
     + '* Starts Syncthing for the current user' + sLineBreak
+    + '* -p option specifies process priority: normal, idle, high, belownormal, or abovenormal' + sLineBreak
     + sLineBreak
     + PROGRAM_NAME + ' --stop [-q]' + sLineBreak
     + '* Stops Syncthing for the current user' + sLineBreak
@@ -66,12 +67,13 @@ begin
 end;
 
 var
-  Opts: array[1..5] of TOption;
+  Opts: array[1..6] of TOption;
   Action: TAction;
   Quiet: Boolean;
   I: Integer;
   Opt: Char;
   StartDir, Msg, CommandTail: string;
+  ProcPriority: TProcessPriority;
   ProcStartInfo: TProcStartInfo;
   RC: DWORD;
 
@@ -86,26 +88,33 @@ begin
   end;
   with Opts[2] do
   begin
+    Name := 'priority';
+    Has_arg := Required_Argument;
+    Flag := nil;
+    Value := 'p';
+  end;
+  with Opts[3] do
+  begin
     Name := 'quiet';
     Has_arg := No_Argument;
     Flag := nil;
     Value := 'q';
   end;
-  with Opts[3] do
+  with Opts[4] do
   begin
     Name := 'start';
     Has_arg := No_Argument;
     Flag := nil;
     Value := 's';
   end;
-  with Opts[4] do
+  with Opts[5] do
   begin
     Name := 'stop';
     Has_arg := No_Argument;
     Flag := nil;
     Value := 't';
   end;
-  with Opts[5] do
+  with Opts[6] do
   begin
     Name := '';
     Has_arg := No_Argument;
@@ -113,12 +122,21 @@ begin
     Value := #0;
   end;
   Action := None;
+  ProcPriority := BelowNormal;
   Quiet := false;
   repeat
-    Opt := GetLongOpts('hqst', @Opts[1], I);
+    Opt := GetLongOpts('hp:qst', @Opts[1], I);
     case Opt of
       'h':
       begin
+      end;
+      'p':
+      begin
+        if not StringToProcessPriority(OptArg, ProcPriority) then
+        begin
+          Usage();
+          exit;
+        end;
       end;
       'q':
       begin
@@ -149,7 +167,7 @@ begin
     FileName := JoinPath(StartDir, 'syncthing.exe');
     StartDirectory := StartDir;
     WindowStyle := Hide;
-    ProcessPriority := BelowNormal;
+    ProcessPriority := ProcPriority;
   end;
 
   if not FileExists(ProcStartInfo.FileName) then

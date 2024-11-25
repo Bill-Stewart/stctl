@@ -44,6 +44,8 @@ type
     ProcessPriority: TProcessPriority;
   end;
 
+function StringToProcessPriority(S: string; out P: TProcessPriority): Boolean;
+
 function StartProcess(var ProcStartInfo: TProcStartInfo): DWORD;
 
 // Finds a process by full path and file name; returns zero for success, or
@@ -51,6 +53,10 @@ function StartProcess(var ProcStartInfo: TProcStartInfo): DWORD;
 function TestProcess(const PathName: string; out Found: Boolean): DWORD;
 
 implementation
+
+// WindowsString: https://github.com/Bill-Stewart/WindowsString
+uses
+  WindowsString;
 
 const
   TH32CS_SNAPPROCESS = 2;
@@ -80,6 +86,21 @@ function Process32FirstW(hSnapshot: HANDLE;
 function Process32NextW(hSnapshot: HANDLE;
   var lppe: PROCESSENTRY32W): BOOL;
   stdcall; external 'kernel32.dll';
+
+function StringToProcessPriority(S: string; out P: TProcessPriority): Boolean;
+begin
+  S := LowercaseString(S);
+  result := true;
+  case S of
+    'normal':      p := Normal;
+    'idle':        p := Idle;
+    'high':        p := High;
+    'belownormal': p := BelowNormal;
+    'abovenormal': p := AboveNormal;
+  else
+    result := false;
+  end;
+end;
 
 function StartProcess(var ProcStartInfo: TProcStartInfo): DWORD;
 var
@@ -142,18 +163,6 @@ begin
   CloseHandle(ProcHandle);  // HANDLE hObject
 end;
 
-function SameText(const S1, S2: string): Boolean;
-const
-  CSTR_EQUAL = 2;
-begin
-  result := CompareStringW(GetThreadLocale(),  // LCID    Locale
-    LINGUISTIC_IGNORECASE,                     // DWORD   dwCmpFlags
-    PChar(S1),                                 // PCNZWCH lpString1
-    -1,                                        // int     cchCount1
-    PChar(S2),                                 // PCNZWCH lpString2
-    -1) = CSTR_EQUAL;                          // int     cchCount2
-end;
-
 function TestProcess(const PathName: string; out Found: Boolean): DWORD;
 var
   Snapshot: HANDLE;
@@ -176,7 +185,7 @@ begin
     Found := false;
     repeat
       Name := GetProcessExecutable(ProcessEntry.th32ProcessID);
-      if (Name <> '') and SameText(Name, PathName) then
+      if (Name <> '') and SameString(Name, PathName) then
       begin
         Found := true;
         break;

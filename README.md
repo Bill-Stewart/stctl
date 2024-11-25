@@ -18,9 +18,25 @@ Command-line parameters are case sensitive. The file `stctl.exe` must sit in the
 
 ### Start Syncthing
 
-`stctl` `--start` [`-q`] [`--` _syncthing parameters_]
+`stctl` `--start` [`-p` _priority_] [`-q`] [`--` _syncthing parameters_]
 
 The `--start` parameter starts Syncthing if it is not running. If Syncthing is already running, a message box will indicate this unless you also specify `-q`.
+
+To specify the process priority for `syncthing.exe`, specify it after the `-p` option. The argument for the `-p` option must be one of the following:
+
+* `normal`
+* `idle`
+* `high`
+* `belownormal`
+* `abovenormal`
+
+For example:
+
+`stctl --start -p normal`
+
+This command will start Syncthing using normal priority. (The default process priority is `belownormal`.)
+
+> The `-p` option won't have any effect on the process priority if the `setLowPriority` option in the Syncthing configuration file is not set to `false`. This setting should already be set to `false` if you installed Syncthing using [Syncthing Windows Setup](https://github.com/Bill-Stewart/SyncthingWindowsSetup/). (See the [Configuration Tuning](https://docs.syncthing.net/users/tuning.html) section in the [Syncthing documentation](https://docs.syncthing.net/) for more information.)
 
 To specify additional command line parameters for `syncthing.exe`, append two dashes (`--`) and the parameters afterwards. For example:
 
@@ -43,6 +59,10 @@ The `--stop` parameter stops Syncthing if it is running. If Syncthing is not run
 **stctl** is part of Syncthing Windows Setup (https://github.com/Bill-Stewart/SyncthingWindowsSetup) 1.27.3 and later when you install Syncthing in non administrative (current user) installation mode.
 
 ## VERSION HISTORY
+
+### 0.0.4 (2024-11-26)
+
+* Added `-p` (`--priority`) parameter.
 
 ### 0.0.3 (2024-10-23)
 
