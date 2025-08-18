@@ -40,17 +40,23 @@ This command will start Syncthing using normal priority. (The default process pr
 
 To specify additional command line parameters for `syncthing.exe`, append two dashes (`--`) and the parameters afterwards. For example:
 
-`stctl --start -- --config="C:\Users\User\Syncthing Config Dir"`
+`stctl --start -- --home="C:\Users\User\Syncthing Config Dir"`
 
-This command will start Syncthing with a custom configuration directory.
+This command will start Syncthing using a custom home directory.
 
 ---
 
 ### Stop Syncthing
 
-`stctl` `--stop` [`-q`]
+`stctl` `--stop` [`-q`] [`--` _syncthing parameters_]
 
 The `--stop` parameter stops Syncthing if it is running. If Syncthing is not running, a message box will indicate this unless you also specify `-q`.
+
+To specify additional command line parameters for `syncthing.exe`, append two dashes (`--`) and the parameters afterwards. For example:
+
+`stctl --stop -- --home="C:\Users\User\Syncthing Config Dir"`
+
+This command will stop Syncthing when using a custom home directory.
 
 ---
 
@@ -59,6 +65,10 @@ The `--stop` parameter stops Syncthing if it is running. If Syncthing is not run
 **stctl** is part of Syncthing Windows Setup (https://github.com/Bill-Stewart/SyncthingWindowsSetup) 1.27.3 and later when you install Syncthing in non administrative (current user) installation mode.
 
 ## VERSION HISTORY
+
+### 0.0.5 (2025-08-18)
+
+* Added ability to append arbitrary command line parameters when stopping Syncthing (`--` parameter).
 
 ### 0.0.4 (2024-11-26)
 

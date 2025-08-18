@@ -1,4 +1,4 @@
-{ Copyright (C) 2024 by Bill Stewart (bstewart at iname.com)
+{ Copyright (C) 2024-2025 by Bill Stewart (bstewart at iname.com)
 
   This Source Code Form is subject to the terms of the Mozilla Public License,
   v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -24,7 +24,7 @@ uses
 const
   PROGRAM_NAME = 'stctl';
   MSGBOX_TITLE = 'Syncthing';
-  PROGRAM_COPYRIGHT = 'Copyright (C) 2024 by Bill Stewart';
+  PROGRAM_COPYRIGHT = 'Copyright (C) 2024-2025 by Bill Stewart';
 
 type
   TAction = (None, Start, Stop);
@@ -46,7 +46,7 @@ begin
     + '* Starts Syncthing for the current user' + sLineBreak
     + '* -p option specifies process priority: normal, idle, high, belownormal, or abovenormal' + sLineBreak
     + sLineBreak
-    + PROGRAM_NAME + ' --stop [-q]' + sLineBreak
+    + PROGRAM_NAME + ' --stop [-q] [-- <syncthing paraameters>]' + sLineBreak
     + '* Stops Syncthing for the current user' + sLineBreak
     + sLineBreak
     + '(Optional) -q suppresses dialog boxes.';
@@ -195,6 +195,9 @@ begin
         CommandTail := string(GetCommandTail(GetCommandLineW(), OptInd));
         if CommandTail <> '' then
           ProcStartInfo.CommandLine := ProcStartInfo.CommandLine + ' ' + CommandTail;
+        {$IFDEF DEBUG}
+        WriteLn(ProcStartInfo.CommandLine);
+        {$ENDIF}
         RC := StartProcess(ProcStartInfo);
       end
       else
@@ -211,6 +214,12 @@ begin
       if IsProcessRunning(ProcStartInfo.FileName) then
       begin
         ProcStartInfo.CommandLine := 'cli operations shutdown';
+        CommandTail := string(GetCommandTail(GetCommandLineW(), OptInd));
+        if CommandTail <> '' then
+          ProcStartInfo.CommandLine := ProcStartInfo.CommandLine + ' ' + CommandTail;
+        {$IFDEF DEBUG}
+        WriteLn(ProcStartInfo.CommandLine);
+        {$ENDIF}
         RC := StartProcess(ProcStartInfo);
       end
       else
